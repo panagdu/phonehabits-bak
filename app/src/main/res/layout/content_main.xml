@@ -9,11 +9,11 @@
     tools:showIn="@layout/app_bar_main">
 
     <TextView
-        android:id="@+id/helloWorldText"
+        android:id="@+id/clicksCounterText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world"
-        android:textSize="36sp"
+        android:text="@string/initialCounter"
+        android:textSize="64sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
