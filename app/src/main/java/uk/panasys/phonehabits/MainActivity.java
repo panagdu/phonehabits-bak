@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        TextView clicksCounterText = findViewById(R.id.clicksCounterText);
+        TextView screenOnCounterText = findViewById(R.id.screenOnCounterText);
 
         drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -45,7 +45,9 @@ public class MainActivity extends AppCompatActivity
 
         IntentFilter screenStateFilter = new IntentFilter();
         screenStateFilter.addAction(Intent.ACTION_SCREEN_ON);
-        registerReceiver(new ScreenOnReceiver(clicksCounterText), screenStateFilter);
+        screenStateFilter.addAction(Intent.ACTION_ANSWER);
+        registerReceiver(new ScreenOnReceiver(screenOnCounterText), screenStateFilter);
+
 
     }
 

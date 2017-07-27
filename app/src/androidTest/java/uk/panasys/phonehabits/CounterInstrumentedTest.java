@@ -16,7 +16,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
-public class ClicksCounterInstrumentedTest {
+public class CounterInstrumentedTest {
 
     @Rule
     public ActivityTestRule<MainActivity> rule = new ActivityTestRule<>(MainActivity.class);
@@ -30,7 +30,7 @@ public class ClicksCounterInstrumentedTest {
 
     @Test
     public void testCounterIs0() {
-        onView(withId(R.id.clicksCounterText))
+        onView(withId(R.id.screenOnCounterText))
                 .check(matches(withText(R.string.initialCounter)));
     }
 }

@@ -6,17 +6,17 @@ import android.content.Intent;
 import android.widget.TextView;
 
 public class ScreenOnReceiver extends BroadcastReceiver {
-    private Integer clicksCounter = 0;
-    private TextView clicksCounterText;
+    private Integer screenOnCounter = 0;
+    private TextView screenOnCounterText;
 
-    public ScreenOnReceiver(TextView clicksCounterText) {
-        this.clicksCounterText = clicksCounterText;
+    public ScreenOnReceiver(TextView screenOnCounterText) {
+        this.screenOnCounterText = screenOnCounterText;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        clicksCounter++;
-        clicksCounterText.setText(String.valueOf(clicksCounter));
+        screenOnCounter++;
+        screenOnCounterText.setText(String.valueOf(screenOnCounter));
         //Toast.makeText(context, "Intent Detected.", Toast.LENGTH_LONG).show();
     }
 }
