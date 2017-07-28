@@ -1,11 +1,9 @@
 <resources>
     <string name="app_name">PhoneHabits</string>
-
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello World!</string>
+
     <string name="initialCounter">0</string>
     <string name="checks">Checks</string>
     <string name="exit">Exit</string>

@@ -11,6 +11,7 @@ public class ScreenOnReceiver extends BroadcastReceiver {
 
     public ScreenOnReceiver(TextView screenOnCounterText) {
         this.screenOnCounterText = screenOnCounterText;
+        this.screenOnCounter = Integer.parseInt(screenOnCounterText.getText().toString());
     }
 
     @Override

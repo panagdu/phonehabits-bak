@@ -2,8 +2,8 @@ package uk.panasys.phonehabits;
 
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
@@ -20,9 +20,10 @@ import uk.panasys.phonehabits.receivers.ScreenOnReceiver;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final String COUNTER_KEY = "SCREEN_ON_COUNTER";
     private Toolbar toolbar;
     private DrawerLayout drawer;
-    private FloatingActionButton plusFab;
+    private TextView screenOnCounterText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +33,9 @@ public class MainActivity extends AppCompatActivity
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        TextView screenOnCounterText = findViewById(R.id.screenOnCounterText);
+        screenOnCounterText = findViewById(R.id.screenOnCounterText);
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        screenOnCounterText.setText(sharedPreferences.getString(COUNTER_KEY, "0"));
 
         drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -93,5 +96,14 @@ public class MainActivity extends AppCompatActivity
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(COUNTER_KEY, screenOnCounterText.getText().toString());
+        editor.apply();
     }
 }
