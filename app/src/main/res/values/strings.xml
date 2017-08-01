@@ -7,4 +7,6 @@
     <string name="initialCounter">0</string>
     <string name="checks">Checks</string>
     <string name="exit">Exit</string>
+    <string name="email">contact@panasys.uk</string>
+    <string name="phoneHabits">PhoneHabits</string>
 </resources>
