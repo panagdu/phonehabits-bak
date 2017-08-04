@@ -1,7 +1,5 @@
 package uk.panasys.phonehabits.activities;
 
-import android.app.ActivityManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -10,23 +8,24 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
+
+import java.text.MessageFormat;
 
 import uk.panasys.phonehabits.R;
 import uk.panasys.phonehabits.listeners.NavigationViewListener;
 import uk.panasys.phonehabits.receivers.ScreenOnReceiver;
 import uk.panasys.phonehabits.services.CountService;
+import uk.panasys.phonehabits.utils.ServicesUtils;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String SCREEN_ON_COUNTER = "SCREEN_ON_COUNTER";
-    public static final String COUNT_FILE = "count";
+    private ServicesUtils servicesUtils;
     private Toolbar toolbar;
     private DrawerLayout drawer;
     private TextView screenOnCounterText;
@@ -38,29 +37,28 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         toolbar = findViewById(R.id.toolbar);
+        drawer = findViewById(R.id.drawer_layout);
+        servicesUtils = new ServicesUtils();
+
         setSupportActionBar(toolbar);
 
-        drawer = findViewById(R.id.drawer_layout);
+
 //        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
 //                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 //        drawer.addDrawerListener(toggle);
 //        toggle.syncState();
-        boolean personalizedGreeting = PreferenceManager
-                .getDefaultSharedPreferences(getBaseContext())
-                .getBoolean("pref_personalized_greeting", false);
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
-        String displayName = PreferenceManager
-                .getDefaultSharedPreferences(getBaseContext())
-                .getString("pref_display_name", "");
+        Boolean personalizedGreeting =defaultSharedPreferences.getBoolean("pref_personalized_greeting", false);
+        String displayName = defaultSharedPreferences.getString("pref_display_name", "");
 
         if(personalizedGreeting){
             TextView personalizedGreetingText = findViewById(R.id.greetingTextView);
-            personalizedGreetingText.setText("Hi "+ displayName +", "+ personalizedGreetingText.getText());
+            personalizedGreetingText.setText(MessageFormat.format("Hi {0}, {1}", displayName, personalizedGreetingText.getText()));
         }
 
         screenOnCounterText = findViewById(R.id.screenOnCounterText);
-        SharedPreferences sharedPreferences = getSharedPreferences(COUNT_FILE, MODE_PRIVATE);
-        screenOnCounterText.setText(sharedPreferences.getString(SCREEN_ON_COUNTER, "0"));
+        screenOnCounterText.setText(defaultSharedPreferences.getString(SCREEN_ON_COUNTER, "0"));
 
 
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -72,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(screenOnReceiver, screenStateFilter);
 
 
-        if (!isMyServiceRunning(CountService.class)) {
+        if (!servicesUtils.isServiceRunning(this, CountService.class)) {
             Intent countService = new Intent(this, CountService.class);
             startService(countService);
         }
@@ -97,8 +95,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             Intent settingsIntent = new Intent(this, SettingsActivity.class);
             startActivity(settingsIntent);
@@ -117,15 +113,7 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    private boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
-    }
+
 
     @Override
     public void onDestroy() {

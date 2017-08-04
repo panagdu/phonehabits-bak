@@ -86,4 +86,5 @@
 
     <string name="pref_personalized_greeting">Show a personalized greeting by enabling this option and setting a display name</string>
     <string name="pref_title_personalized_greeting">Use personalized greeting</string>
+    <string name="pref_reset_every_day">Reset counter every day</string>
 </resources>
