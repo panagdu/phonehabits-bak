@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="uk.panasys.phonehabits">
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="true"
@@ -22,7 +24,7 @@
         </activity>
 
         <receiver
-            android:name="uk.panasys.phonehabits.receivers.BootReceiver"
+            android:name=".receivers.BootReceiver"
             android:label="StartMyServiceAtBootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -30,11 +32,18 @@
         </receiver>
 
         <service
-            android:name="uk.panasys.phonehabits.services.CountService"
+            android:name=".services.CountService"
             android:enabled="true" />
-    </application>
 
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+        <activity
+            android:name=".activities.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="uk.panasys.phonehabits.activities.MainActivity" />
+
+        </activity>
+    </application>
 
 </manifest>

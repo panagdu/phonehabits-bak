@@ -16,7 +16,6 @@ public class NavigationViewListener implements NavigationView.OnNavigationItemSe
         this.activity = activity;
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();

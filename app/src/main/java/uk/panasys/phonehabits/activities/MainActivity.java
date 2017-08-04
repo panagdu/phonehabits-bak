@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -14,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import uk.panasys.phonehabits.R;
@@ -39,11 +41,22 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+//        drawer.addDrawerListener(toggle);
+//        toggle.syncState();
+        boolean personalizedGreeting = PreferenceManager
+                .getDefaultSharedPreferences(getBaseContext())
+                .getBoolean("pref_personalized_greeting", false);
 
+        String displayName = PreferenceManager
+                .getDefaultSharedPreferences(getBaseContext())
+                .getString("pref_display_name", "");
+
+        if(personalizedGreeting){
+            TextView personalizedGreetingText = findViewById(R.id.greetingTextView);
+            personalizedGreetingText.setText("Hi "+ displayName +", "+ personalizedGreetingText.getText());
+        }
 
         screenOnCounterText = findViewById(R.id.screenOnCounterText);
         SharedPreferences sharedPreferences = getSharedPreferences(COUNT_FILE, MODE_PRIVATE);
@@ -87,8 +100,8 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent serviceIntent = new Intent(this, CountService.class);
-            startService(serviceIntent);
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsIntent);
             return true;
         }
 

@@ -20,25 +20,25 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/timesTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="times"
         android:textAlignment="center"
         android:textSize="36sp"
-        tools:layout_editor_absoluteX="147dp"
-        tools:layout_editor_absoluteY="314dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/screenOnCounterText"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/screenOnCounterText"
+        tools:layout_editor_absoluteX="147dp"
+        tools:layout_editor_absoluteY="314dp" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/greetingTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="You've checked it"
+        android:text="@string/checkCountText"
         android:textAlignment="center"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/screenOnCounterText"

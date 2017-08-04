@@ -12,8 +12,6 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class UserPresentReceiver extends BroadcastReceiver {
 
-
-
     public static final String SCREEN_COUNT_FILE = "count";
 
     @Override
@@ -24,7 +22,8 @@ public class UserPresentReceiver extends BroadcastReceiver {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString(MainActivity.SCREEN_ON_COUNTER, String.valueOf(Integer.valueOf(sharedPreferences.getString(MainActivity.SCREEN_ON_COUNTER, "0")) + 1));
             editor.apply();
-        } else if (Intent.ACTION_SCREEN_OFF.equals(action)) {
+        }
+        else if (Intent.ACTION_SCREEN_OFF.equals(action)) {
             Log.e("tag", "screen off");
         }
     }
