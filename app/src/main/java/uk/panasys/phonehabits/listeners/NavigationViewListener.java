@@ -23,8 +23,10 @@ public class NavigationViewListener implements NavigationView.OnNavigationItemSe
         int id = item.getItemId();
 
         if (id == R.id.nav_checks) {
-            Snackbar.make(activity.getDrawer(), "Wow, this goes at the bottom!", Snackbar.LENGTH_SHORT)
-                    .setAction("Action", null).show();
+            //TODO Remove this
+//            Snackbar.make(activity.getDrawer(), "Wow, this goes at the bottom!", Snackbar.LENGTH_SHORT)
+//                    .setAction("Action", null).show();
+            return true;
         } else if (id == R.id.nav_settings) {
             Intent settingsIntent = new Intent(activity.getApplicationContext(), SettingsActivity.class);
             activity.getApplicationContext().startActivity(settingsIntent);

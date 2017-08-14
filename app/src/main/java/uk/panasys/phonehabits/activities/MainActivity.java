@@ -1,9 +1,7 @@
 package uk.panasys.phonehabits.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -20,6 +18,10 @@ import uk.panasys.phonehabits.R;
 import uk.panasys.phonehabits.listeners.NavigationViewListener;
 import uk.panasys.phonehabits.services.CountService;
 import uk.panasys.phonehabits.utils.ServicesUtils;
+
+import static uk.panasys.phonehabits.utils.SharedPreferencesUtils.getBooleanPreference;
+import static uk.panasys.phonehabits.utils.SharedPreferencesUtils.getIntegerPreference;
+import static uk.panasys.phonehabits.utils.SharedPreferencesUtils.getStringPreference;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,17 +48,17 @@ public class MainActivity extends AppCompatActivity {
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        Boolean personalizedGreeting =defaultSharedPreferences.getBoolean("pref_personalized_greeting", false);
-        String displayName = defaultSharedPreferences.getString("pref_display_name", "");
 
-        if(personalizedGreeting){
+        Boolean personalizedGreeting = getBooleanPreference(this, "pref_personalized_greeting", false);
+        String displayName = getStringPreference(this, "pref_display_name", "");
+
+        if (personalizedGreeting) {
             TextView personalizedGreetingText = findViewById(R.id.greetingTextView);
             personalizedGreetingText.setText(MessageFormat.format("Hi {0}, {1}", displayName, personalizedGreetingText.getText()));
         }
 
         screenOnCounterText = findViewById(R.id.screenOnCounterText);
-        screenOnCounterText.setText(String.valueOf(defaultSharedPreferences.getInt(SCREEN_ON_COUNTER, 0)));
+        screenOnCounterText.setText(String.valueOf(getIntegerPreference(this, SCREEN_ON_COUNTER, 0)));
 
 
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -109,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        screenOnCounterText.setText(String.valueOf(defaultSharedPreferences.getInt(SCREEN_ON_COUNTER, 0)));
+        screenOnCounterText.setText(String.valueOf(getIntegerPreference(this, SCREEN_ON_COUNTER, 0)));
     }
 }

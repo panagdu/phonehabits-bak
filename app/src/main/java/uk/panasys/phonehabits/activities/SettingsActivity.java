@@ -11,17 +11,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
-import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
+import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 
 import java.util.List;
 
 import uk.panasys.phonehabits.R;
+
+import static uk.panasys.phonehabits.utils.SharedPreferencesUtils.getStringPreference;
 
 public class SettingsActivity extends AppCompatPreferenceActivity {
 
@@ -102,9 +102,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         // Trigger the listener immediately with the preference's
         // current value.
         sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
-                PreferenceManager
-                        .getDefaultSharedPreferences(preference.getContext())
-                        .getString(preference.getKey(), ""));
+                        getStringPreference(preference.getContext(), preference.getKey(), ""));
     }
 
     @Override
@@ -188,8 +186,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         int id = item.getItemId();
         if (id == android.R.id.home) {
             startActivity(new Intent(getBaseContext(), MainActivity.class));
-            finish();
-            return true;
+finish();
+return true;
         }
         return super.onOptionsItemSelected(item);
     }

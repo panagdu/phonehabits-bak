@@ -4,9 +4,7 @@ import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
 import java.util.Calendar;
@@ -14,49 +12,48 @@ import java.util.Calendar;
 import uk.panasys.phonehabits.R;
 
 import static uk.panasys.phonehabits.activities.MainActivity.SCREEN_ON_COUNTER;
+import static uk.panasys.phonehabits.utils.SharedPreferencesUtils.getBooleanPreference;
+import static uk.panasys.phonehabits.utils.SharedPreferencesUtils.getIntegerPreference;
+import static uk.panasys.phonehabits.utils.SharedPreferencesUtils.getStringPreference;
+import static uk.panasys.phonehabits.utils.SharedPreferencesUtils.setIntegerPreference;
+import static uk.panasys.phonehabits.utils.SharedPreferencesUtils.setStringPreference;
 
 public class ScreenOnReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        Integer checkPhoneCounter = sharedPreferences.getInt(SCREEN_ON_COUNTER, 0);
+        Integer checkPhoneCounter = getIntegerPreference(context, SCREEN_ON_COUNTER, 0);
 
-        sendNotification(context, sharedPreferences);
-        checkPhoneCounter = resetCounterIfNeeded(sharedPreferences, checkPhoneCounter);
-
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(SCREEN_ON_COUNTER, ++checkPhoneCounter);
-        editor.apply();
+        sendNotification(context);
+        checkPhoneCounter = resetCounterIfNeeded(context, checkPhoneCounter);
+        setIntegerPreference(context, SCREEN_ON_COUNTER, ++checkPhoneCounter);
     }
 
-    private Integer resetCounterIfNeeded(SharedPreferences sharedPreferences, Integer checkPhoneCounter) {
-        Boolean resetEveryDay = sharedPreferences.getBoolean("pref_reset_every_day", false);
+    private Integer resetCounterIfNeeded(Context context, Integer checkPhoneCounter) {
+        Boolean resetEveryDay = getBooleanPreference(context, "pref_reset_every_day", false);
 
         if (resetEveryDay) {
-            String day = sharedPreferences.getString("DAY", "0");
+            String day = getStringPreference(context, "DAY", "0");
 
             Calendar cal = Calendar.getInstance();
             Integer dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
             String dayOfMonthStr = String.valueOf(dayOfMonth);
 
             if (!dayOfMonthStr.equals(day)) {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("DAY", dayOfMonthStr);
+                setStringPreference(context, "DAY", dayOfMonthStr);
                 checkPhoneCounter = 0;
-                editor.apply();
             }
         }
         return checkPhoneCounter;
     }
 
-    private void sendNotification(Context context, SharedPreferences sharedPreferences) {
+    private void sendNotification(Context context) {
         long[] pattern = {0, 100, 1000};
         int mNotificationId = 1;
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
-                        .setVibrate(sharedPreferences.getBoolean("pref_notifications_vibrate", false) ? pattern : null)
-                        .setSound(sharedPreferences.getBoolean("pref_notifications_vibrate", false) ? Uri.parse(sharedPreferences.getString("pref_notifications_ringtone", "")) : null)
+                        .setVibrate(getBooleanPreference(context, "pref_notifications_vibrate", false) ? pattern : null)
+                        .setSound(getBooleanPreference(context, "pref_notifications_vibrate", false) ? Uri.parse(getStringPreference(context, "pref_notifications_ringtone", "")) : null)
                         .setSmallIcon(R.drawable.ic_smartphone_black_24dp)
                         .setContentTitle("Relax!")
                         .setContentText("You've checked your phone 100 times today!");
