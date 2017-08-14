@@ -6,12 +6,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
 
-import uk.panasys.phonehabits.receivers.UserPresentReceiver;
+import uk.panasys.phonehabits.receivers.ScreenOnReceiver;
 
 
 public class CountService extends Service {
 
-    private BroadcastReceiver userPresentReceiver;
+    private BroadcastReceiver screenOnReceiver;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -23,15 +23,14 @@ public class CountService extends Service {
         super.onCreate();
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Intent.ACTION_SCREEN_ON);
-        intentFilter.addAction(Intent.ACTION_USER_PRESENT);
-        userPresentReceiver = new UserPresentReceiver();
-        registerReceiver(userPresentReceiver, intentFilter);
+        screenOnReceiver = new ScreenOnReceiver();
+        registerReceiver(screenOnReceiver, intentFilter);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(userPresentReceiver);
+        unregisterReceiver(screenOnReceiver);
     }
 
 }

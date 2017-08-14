@@ -1,13 +1,13 @@
 package uk.panasys.phonehabits.activities;
 
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -18,18 +18,17 @@ import java.text.MessageFormat;
 
 import uk.panasys.phonehabits.R;
 import uk.panasys.phonehabits.listeners.NavigationViewListener;
-import uk.panasys.phonehabits.receivers.ScreenOnReceiver;
 import uk.panasys.phonehabits.services.CountService;
 import uk.panasys.phonehabits.utils.ServicesUtils;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String SCREEN_ON_COUNTER = "SCREEN_ON_COUNTER";
+
     private ServicesUtils servicesUtils;
     private Toolbar toolbar;
     private DrawerLayout drawer;
     private TextView screenOnCounterText;
-    private ScreenOnReceiver screenOnReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,13 +41,12 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
 
-//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-//        drawer.addDrawerListener(toggle);
-//        toggle.syncState();
         SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-
         Boolean personalizedGreeting =defaultSharedPreferences.getBoolean("pref_personalized_greeting", false);
         String displayName = defaultSharedPreferences.getString("pref_display_name", "");
 
@@ -58,17 +56,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         screenOnCounterText = findViewById(R.id.screenOnCounterText);
-        screenOnCounterText.setText(defaultSharedPreferences.getString(SCREEN_ON_COUNTER, "0"));
+        screenOnCounterText.setText(String.valueOf(defaultSharedPreferences.getInt(SCREEN_ON_COUNTER, 0)));
 
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(new NavigationViewListener(this));
-
-        IntentFilter screenStateFilter = new IntentFilter();
-        screenStateFilter.addAction(Intent.ACTION_SCREEN_ON);
-        screenOnReceiver = new ScreenOnReceiver(screenOnCounterText);
-        registerReceiver(screenOnReceiver, screenStateFilter);
-
 
         if (!servicesUtils.isServiceRunning(this, CountService.class)) {
             Intent countService = new Intent(this, CountService.class);
@@ -87,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -98,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             Intent settingsIntent = new Intent(this, SettingsActivity.class);
             startActivity(settingsIntent);
+            finish();
             return true;
         }
 
@@ -105,23 +97,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        SharedPreferences sharedPreferences = getSharedPreferences("count", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(SCREEN_ON_COUNTER, screenOnCounterText.getText().toString());
-        editor.apply();
-    }
-
-
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
-        this.unregisterReceiver(screenOnReceiver);
     }
 
     public DrawerLayout getDrawer() {
         return drawer;
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        screenOnCounterText.setText(String.valueOf(defaultSharedPreferences.getInt(SCREEN_ON_COUNTER, 0)));
     }
 }
