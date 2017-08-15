@@ -17,8 +17,8 @@ import java.text.MessageFormat;
 import uk.panasys.phonehabits.R;
 import uk.panasys.phonehabits.listeners.NavigationViewListener;
 import uk.panasys.phonehabits.services.CountService;
-import uk.panasys.phonehabits.utils.ServicesUtils;
 
+import static uk.panasys.phonehabits.utils.ServicesUtils.isServiceRunning;
 import static uk.panasys.phonehabits.utils.SharedPreferencesUtils.getBooleanPreference;
 import static uk.panasys.phonehabits.utils.SharedPreferencesUtils.getIntegerPreference;
 import static uk.panasys.phonehabits.utils.SharedPreferencesUtils.getStringPreference;
@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String SCREEN_ON_COUNTER = "SCREEN_ON_COUNTER";
 
-    private ServicesUtils servicesUtils;
     private Toolbar toolbar;
     private DrawerLayout drawer;
     private TextView screenOnCounterText;
@@ -36,10 +35,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        toolbar = findViewById(R.id.toolbar);
+        
+        //init fields
         drawer = findViewById(R.id.drawer_layout);
-        servicesUtils = new ServicesUtils();
+        toolbar = findViewById(R.id.toolbar);
+        screenOnCounterText = findViewById(R.id.screenOnCounterText);
 
         setSupportActionBar(toolbar);
 
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-
+        // init state of the app
         Boolean personalizedGreeting = getBooleanPreference(this, "pref_personalized_greeting", false);
         String displayName = getStringPreference(this, "pref_display_name", "");
 
@@ -57,14 +57,14 @@ public class MainActivity extends AppCompatActivity {
             personalizedGreetingText.setText(MessageFormat.format("Hi {0}, {1}", displayName, personalizedGreetingText.getText()));
         }
 
-        screenOnCounterText = findViewById(R.id.screenOnCounterText);
+
         screenOnCounterText.setText(String.valueOf(getIntegerPreference(this, SCREEN_ON_COUNTER, 0)));
 
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(new NavigationViewListener(this));
 
-        if (!servicesUtils.isServiceRunning(this, CountService.class)) {
+        if (!isServiceRunning(this, CountService.class)) {
             Intent countService = new Intent(this, CountService.class);
             startService(countService);
         }
